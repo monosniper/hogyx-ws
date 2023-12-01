@@ -30,17 +30,17 @@ class Miner {
         } else this.start()
     }
 
-    getRandomCoinId() {
-        return getRandomEl(this.session.coins).id
+    getRandomCoin() {
+        return getRandomEl(this.session.coins)
     }
 
     setCurrentServer(server) {
         this.current_server = server;
     }
 
-    getCoinAmount(values, coin_id) {
+    getCoinAmount(values, coin) {
         const usd_amount = getRandomFloat(values[0], values[1], 2)
-        const rate = this.session.coins.find(({ id }) => id === coin_id).rate
+        const rate = this.session.coins.find(({ slug }) => slug === coin).rate
 
         return parseFloat((usd_amount / rate).toFixed(2))
     }
@@ -88,22 +88,22 @@ class Miner {
                 this.addSeconds()
 
                 this.addServerLog({
-                    coin_id: this.getRandomCoinId(),
+                    coin: this.getRandomCoin().slug,
                     text: "Wallet Check:",
                     contrast: generateWallet(),
                 })
 
                 const cap = servers_cap[this.current_server.server.type].chances
                 const cap_coin = cap.coin
-                const coin_id = this.getRandomCoinId();
+                const coin = this.getRandomCoin().slug;
 
                 const list = [
                     {
                         chance: cap_coin.chance / 100,
                         func: () => ({
                             type: Found.TYPE_COIN,
-                            amount: this.getCoinAmount(cap_coin.values, coin_id),
-                            id: coin_id,
+                            amount: this.getCoinAmount(cap_coin.values, coin),
+                            id: coin,
                         })
                     }
                 ]

@@ -3,6 +3,12 @@ module.exports = {
     API_URL: "https://api.hogyx.io/v1/",
     check_interval: 500,
 
+    statuses: {
+        work: 'work',
+        active: 'active',
+        not_active: 'not active',
+    },
+
     servers_cap: {
         free: {
             work_time: 600, // 10 mins $(0.3 - 3)
