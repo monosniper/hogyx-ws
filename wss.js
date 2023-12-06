@@ -10,7 +10,7 @@ const server = createServer({
     cert: readFileSync('server.crt'),
     key: readFileSync('server.key')
 });
-const wss = new WebSocketServer({server});
+const wss = new WebSocketServer({ noServer: true });
 
 const send = (ws, message, data = {}) => ws.send(JSON.stringify({
     message, data
