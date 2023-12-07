@@ -15,8 +15,8 @@ const server = createServer({
     key: readFileSync('/etc/letsencrypt/live/server.hogyx.io/privkey.pem'),
     // rejectUnauthorized: false
 });
-// const wss = new WebSocketServer({ server });
-const wss = new WebSocketServer({ noServer: true });
+const wss = new WebSocketServer({ server });
+// const wss = new WebSocketServer({ noServer: true });
 
 console.log("started web socket server...")
 
@@ -90,9 +90,9 @@ server.on('upgrade', function upgrade(request, socket, head) {
 
         socket.removeListener('error', console.error);
 
-        wss.handleUpgrade(request, socket, head, function done(ws) {
-            wss.emit('connection', ws, request, client);
-        });
+        // wss.handleUpgrade(request, socket, head, function done(ws) {
+        //     wss.emit('connection', ws, request, client);
+        // });
     });
 });
 
