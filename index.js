@@ -1,2 +1,2 @@
-require("./wss")
-// require("./wss").listen(1337);
+// require("./wss")
+require("./wss").listen(1337);
