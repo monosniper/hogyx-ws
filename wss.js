@@ -11,11 +11,12 @@ const server = createServer({
     // cert: readFileSync('server.crt'),
     // key: readFileSync('server.key'),
 
-    cert: readFileSync('/etc/letsencrypt/live/server.hogyx.io/fullchain.pem'),
+    cert: readFileSync('/etc/letsencrypt/live/server.hogyx.io/cert.pem'),
     key: readFileSync('/etc/letsencrypt/live/server.hogyx.io/privkey.pem'),
     // rejectUnauthorized: false
 });
-const wss = new WebSocketServer({ noServer: true });
+const wss = new WebSocketServer({ server });
+// const wss = new WebSocketServer({ noServer: true });
 
 const send = (ws, message, data = {}) => ws.send(JSON.stringify({
     message, data
