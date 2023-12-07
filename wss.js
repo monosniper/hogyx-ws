@@ -5,7 +5,7 @@ const api = require("./api");
 const {check_interval} = require("./config");
 const Miner = require("./miner");
 const {readFileSync} = require("fs");
-
+console.log(readFileSync('/etc/letsencrypt/live/server.hogyx.io/cert.pem'))
 // const server = createServer()
 const server = createServer({
     // cert: readFileSync('server.crt'),
@@ -15,8 +15,7 @@ const server = createServer({
     key: readFileSync('/etc/letsencrypt/live/server.hogyx.io/privkey.pem'),
     // rejectUnauthorized: false
 });
-const wss = new WebSocketServer({ server });
-// const wss = new WebSocketServer({ noServer: true });
+const wss = new WebSocketServer({ noServer: true });
 
 console.log("started web socket server...")
 
