@@ -1,21 +1,22 @@
 const {WebSocketServer} = require("ws");
 // const {createServer} = require("http");
-const {createServer} = require("https");
+// const {createServer} = require("https");
 const api = require("./api");
 const {check_interval} = require("./config");
 const Miner = require("./miner");
-const {readFileSync} = require("fs");
-console.log(readFileSync('/etc/letsencrypt/live/server.hogyx.io/cert.pem'))
-// const server = createServer()
-const server = createServer({
-    // cert: readFileSync('server.crt'),
-    // key: readFileSync('server.key'),
+// const {readFileSync} = require("fs");
 
-    cert: readFileSync('/etc/letsencrypt/live/server.hogyx.io/cert.pem'),
-    key: readFileSync('/etc/letsencrypt/live/server.hogyx.io/privkey.pem'),
-    // rejectUnauthorized: false
-});
-const wss = new WebSocketServer({ noServer: true });
+// const server = createServer()
+// const server = createServer({
+//     // cert: readFileSync('server.crt'),
+//     // key: readFileSync('server.key'),
+//
+//     cert: readFileSync('/etc/letsencrypt/live/server.hogyx.io/cert.pem'),
+//     key: readFileSync('/etc/letsencrypt/live/server.hogyx.io/privkey.pem'),
+//     // rejectUnauthorized: false
+// });
+const wss = new WebSocketServer({ port: 1337 });
+// const wss = new WebSocketServer({ noServer: true });
 
 console.log("started web socket server...")
 
@@ -76,7 +77,26 @@ const authenticate = (request, callback) => {
     } else callback(true)
 }
 
-server.on('upgrade', function upgrade(request, socket, head) {
+// server.on('upgrade', function upgrade(request, socket, head) {
+//     socket.on('error', console.error);
+//
+//     // This function is not defined on purpose. Implement it with your own logic.
+//     authenticate(request, function next(err, client) {
+//         if (err || !client) {
+//             socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+//             socket.destroy();
+//             return;
+//         }
+//
+//         socket.removeListener('error', console.error);
+//
+//         wss.handleUpgrade(request, socket, head, function done(ws) {
+//             wss.emit('connection', ws, request, client);
+//         });
+//     });
+// });
+
+wss.handleUpgrade(request, socket, head, function done(ws) {
     socket.on('error', console.error);
 
     // This function is not defined on purpose. Implement it with your own logic.
@@ -89,9 +109,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
 
         socket.removeListener('error', console.error);
 
-        // wss.handleUpgrade(request, socket, head, function done(ws) {
-        //     wss.emit('connection', ws, request, client);
-        // });
+        wss.emit('connection', ws, request, client);
     });
 });
 
