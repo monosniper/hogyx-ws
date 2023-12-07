@@ -15,8 +15,10 @@ const server = createServer({
     key: readFileSync('/etc/letsencrypt/live/server.hogyx.io/privkey.pem'),
     // rejectUnauthorized: false
 });
-const wss = new WebSocketServer({ server });
-// const wss = new WebSocketServer({ noServer: true });
+// const wss = new WebSocketServer({ server });
+const wss = new WebSocketServer({ noServer: true });
+
+console.log("started web socket server...")
 
 const send = (ws, message, data = {}) => ws.send(JSON.stringify({
     message, data
