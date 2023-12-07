@@ -8,8 +8,11 @@ const {readFileSync} = require("fs");
 
 // const server = createServer()
 const server = createServer({
-    cert: readFileSync('server.crt'),
-    key: readFileSync('server.key'),
+    // cert: readFileSync('server.crt'),
+    // key: readFileSync('server.key'),
+
+    cert: readFileSync('/etc/letsencrypt/live/server.hogyx.io/fullchain.pem'),
+    key: readFileSync('/etc/letsencrypt/live/server.hogyx.io/privkey.pem'),
     // rejectUnauthorized: false
 });
 const wss = new WebSocketServer({ noServer: true });
