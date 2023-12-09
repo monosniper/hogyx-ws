@@ -70,7 +70,7 @@ class Miner {
             this.addLog({
                 type: Log.TYPE_SERVERS,
                 text: "Starting server:",
-                contrast: userServer.name,
+                contrast: userServer.server.name,
             })
 
             this.addSeconds(randomIntFromInterval(3, 10))
@@ -78,7 +78,7 @@ class Miner {
             this.addLog({
                 type: Log.TYPE_SERVERS,
                 text: "Current server:",
-                contrast: userServer.name,
+                contrast: userServer.server.name,
             })
 
             this.addSeconds(randomIntFromInterval(1, 3))
