@@ -1,16 +1,21 @@
 const {WebSocketServer} = require("ws");
-// const {createServer} = require("http");
-const {createServer} = require("https");
+const {createServer} = require("http");
+// const {createServer} = require("https");
 const api = require("./api");
 const {check_interval} = require("./config");
 const Miner = require("./miner");
 const {readFileSync} = require("fs");
 
-const privateKey = readFileSync('privkey.pem', 'utf8');
-const certificate = readFileSync('fullchain.pem', 'utf8');
+try {
+    const privateKey = readFileSync('privkey.pem', 'utf8');
+    const certificate = readFileSync('fullchain.pem', 'utf8');
+} catch (e) {
+    console.error('Can\'t find cert files')
+}
 
 // const server = createServer()
-const server = createServer({ key: privateKey, cert: certificate });
+// const server = createServer({ key: privateKey, cert: certificate });
+const server = createServer();
 const wss = new WebSocketServer({ noServer: true });
 
 console.log("started web socket server...")
@@ -27,19 +32,23 @@ const methods = {
                 ...data
             }).then(rs => {
                 if (rs.success) {
-                    send(ws, "started", {session_id: rs.data.id})
-
                     new Miner(
                         rs.data,
                         (updated_session_data, url=undefined) => api(
                             url ?? "sessions/" + rs.data.id,
                             updated_session_data,
                             "put"
-                        )
+                        ),
+                        () => send(ws, "started", {session_id: rs.data.id})
                     )
                 } else send(ws, "error", {"description": rs})
             })
         } else send(ws, "error", {"description": "Coins or servers array is empty"})
+    },
+    _stop: (data, ws) => {
+        api(`sessions/${data.session_id}/stop`, false, 'delete').then(rs => {
+            send(ws, "success", rs)
+        }).catch(err => console.error(err))
     },
     connect: (data, ws, client) => {
         function check() {

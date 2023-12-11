@@ -13,11 +13,13 @@ class Found {
 }
 
 class Miner {
-    constructor(session_data, update_callback) {
+    constructor(session_data, update_callback, ready_callback) {
         this.session = session_data
         this.update = update_callback
+        this.ready_callback = ready_callback
         this.interval = 1000
         this.current_server = null;
+        this.servers_updated = {};
         this.timestamp = new Date(this.session.created_at);
         this.nfts = []
         console.log(this.session.created_at)
@@ -51,6 +53,10 @@ class Miner {
         this.timestamp = newTimestamp
     }
 
+    serversUpdated() {
+        return Object.values(this.servers_updated).filter(val => val).length === Object.values(this.servers_updated).length
+    }
+
     start() {
         this.addLog({
             type: Log.TYPE_MINER,
@@ -61,6 +67,7 @@ class Miner {
         this.addSeconds(randomIntFromInterval(1, 5))
 
         this.session.servers.forEach((userServer) => {
+            this.servers_updated[userServer.id] = false;
             this.setCurrentServer(userServer)
             const work_time = servers_cap[userServer.server.type].work_time * (1000 / this.interval)
 
@@ -138,10 +145,22 @@ class Miner {
             console.log("checks: " + this.current_server.logs.length)
             console.log("founds: " + this.current_server.founds.length)
 
-            this.update(this.current_server, 'user/servers/'+this.current_server.id)
+            this.update(this.current_server, 'user/servers/'+this.current_server.id).then(() => {
+                this.servers_updated[this.current_server.id] = true
+            })
         })
 
-        this.update(this.session)
+        const _this = this
+
+        function tryUpdate() {
+            if(_this.serversUpdated()) {
+                _this.update(_this.session).then(_this.ready_callback)
+            } else {
+                setTimeout(tryUpdate, 1000)
+            }
+        }
+
+        tryUpdate()
     }
 
     addServerLog(data) {

@@ -1,6 +1,6 @@
 module.exports = {
-    // API_URL: "http://localhost:8000/v1/",
-    API_URL: "https://api.hogyx.io/v1/",
+    API_URL: "http://localhost:8000/v1/",
+    // API_URL: "https://api.hogyx.io/v1/",
     check_interval: 500,
 
     statuses: {
