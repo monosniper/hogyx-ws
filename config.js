@@ -24,7 +24,7 @@ module.exports = {
             chances: {
                 coin: {
                     chance: 10,
-                    values: [0.01, 0.1]
+                    values: [0.04, 0.1]
                 },
             }
         },
@@ -33,7 +33,7 @@ module.exports = {
             chances: {
                 coin: {
                     chance: 10,
-                    values: [0.01, 0.1]
+                    values: [0.1, 0.15]
                 },
                 nft: 5 / 3600 // 5% in an hour
             }
@@ -43,7 +43,7 @@ module.exports = {
             chances: {
                 coin: {
                     chance: 10,
-                    values: [0.01, 0.1]
+                    values: [0.15, 0.2]
                 },
                 nft: 15 / 3600 // 15% in an hour
             }
@@ -53,7 +53,7 @@ module.exports = {
             chances: {
                 coin: {
                     chance: 10,
-                    values: [0.01, 0.1]
+                    values: [0.25, 0.5]
                 },
                 nft: 25 / 3600 // 25% in an hour
             }
@@ -63,7 +63,7 @@ module.exports = {
             chances: {
                 coin: {
                     chance: 10,
-                    values: [0.01, 0.1]
+                    values: [0.5, 1]
                 },
                 nft: 40 / 3600 // 40% in an hour
             }

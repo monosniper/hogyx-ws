@@ -1,6 +1,6 @@
 const {servers_cap} = require("./config");
 const api = require("./api");
-const {generateWallet, getRandomEl, callRandomFunction, getRandomFloat, randomIntFromInterval} = require("./utils");
+const {generateWallet, getRandomEl, callRandomFunction, getRandomFloat, randomIntFromInterval, chanceCall} = require("./utils");
 
 class Log {
     static TYPE_MINER = 'miner'
@@ -22,7 +22,7 @@ class Miner {
         this.servers_updated = {};
         this.timestamp = new Date(this.session.created_at);
         this.nfts = []
-        console.log(this.session.created_at)
+
         if (!this.session.logs) this.session.logs = []
 
         if (this.session.servers.find(userServer => userServer.server.nft)) {
@@ -44,7 +44,7 @@ class Miner {
         const usd_amount = getRandomFloat(values[0], values[1], 2)
         const rate = this.session.coins.find(({ slug }) => slug === coin).rate
 
-        return parseFloat((usd_amount / rate).toFixed(2))
+        return parseFloat((usd_amount / rate).toFixed(10))
     }
 
     addSeconds(seconds=1) {
@@ -65,6 +65,17 @@ class Miner {
         })
 
         this.addSeconds(randomIntFromInterval(1, 5))
+
+        this.session.coins.forEach(coin => {
+            if(coin.hardLoad) {
+                this.addLog({
+                    type: Log.TYPE_MINER,
+                    text: "Hard Load",
+                    contrast: "Coin: " + coin.slug,
+                })
+                this.addSeconds(randomIntFromInterval(1, 3))
+            }
+        })
 
         this.session.servers.forEach((userServer) => {
             this.servers_updated[userServer.id] = false;
@@ -94,43 +105,47 @@ class Miner {
                 // i % 2 === 0 && this.addSeconds()
                 this.addSeconds()
 
-                this.addServerLog({
-                    coin: this.getRandomCoin().slug,
-                    text: "Wallet Check:",
-                    contrast: generateWallet(),
-                })
+                const current_coin = this.getRandomCoin();
 
-                const cap = servers_cap[this.current_server.server.type].chances
-                const cap_coin = cap.coin
-                const coin = this.getRandomCoin().slug;
+                chanceCall(() => {
+                    this.addServerLog({
+                        coin: current_coin.slug,
+                        text: "Wallet Check:",
+                        contrast: generateWallet(),
+                    })
 
-                const list = [
-                    {
-                        chance: cap_coin.chance / 100,
-                        func: () => ({
-                            type: Found.TYPE_COIN,
-                            amount: this.getCoinAmount(cap_coin.values, coin),
-                            id: coin,
+                    const cap = servers_cap[this.current_server.server.type].chances
+                    const cap_coin = cap.coin
+                    const coin = current_coin.slug;
+
+                    const list = [
+                        {
+                            chance: cap_coin.chance / 100,
+                            func: () => ({
+                                type: Found.TYPE_COIN,
+                                amount: this.getCoinAmount(cap_coin.values, coin),
+                                id: coin,
+                            })
+                        }
+                    ]
+
+                    if (this.current_server.server.nft) {
+                        list.push({
+                            chance: cap.nft / 100,
+                            func: () => ({
+                                type: Found.TYPE_NFT,
+                                id: getRandomEl(this.nfts).id,
+                            })
                         })
                     }
-                ]
 
-                if (this.current_server.server.nft) {
-                    list.push({
-                        chance: cap.nft / 100,
-                        func: () => ({
-                            type: Found.TYPE_NFT,
-                            id: getRandomEl(this.nfts).id,
-                        })
-                    })
-                }
+                    const found = callRandomFunction(list)
 
-                const found = callRandomFunction(list)
-
-                if (found) {
-                    const found_data = found.func()
-                    found_data && this.addServerFound(found_data)
-                }
+                    if (found) {
+                        const found_data = found.func()
+                        found_data && this.addServerFound(found_data)
+                    }
+                }, current_coin.hardLoad ? 40 : 100)
             }
 
             let sum = 0
@@ -145,8 +160,10 @@ class Miner {
             console.log("checks: " + this.current_server.logs.length)
             console.log("founds: " + this.current_server.founds.length)
 
+            const this_server_id = this.current_server.id
+
             this.update(this.current_server, 'user/servers/'+this.current_server.id).then(() => {
-                this.servers_updated[this.current_server.id] = true
+                this.servers_updated[this_server_id] = true
             })
         })
 

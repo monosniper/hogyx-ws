@@ -35,10 +35,15 @@ function callRandomFunction(list) {
     })
 }
 
+function chanceCall(callback, chance=40) {
+    randomIntFromInterval(1, 100) <= chance && callback()
+}
+
 module.exports = {
     randomIntFromInterval,
     generateWallet,
     getRandomEl,
     callRandomFunction,
     getRandomFloat,
+    chanceCall,
 }
