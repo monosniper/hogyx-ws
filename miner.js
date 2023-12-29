@@ -77,6 +77,8 @@ class Miner {
             }
         })
 
+        const _this = this
+
         this.session.servers.forEach((userServer) => {
             this.servers_updated[userServer.id] = false;
             this.setCurrentServer(userServer)
@@ -164,8 +166,6 @@ class Miner {
 
             console.log("logs count: " + this.current_server.logs.length)
             console.log("founds count: " + this.current_server.founds.length)
-
-            const _this = this
 
             if(this.current_server.logs.length <= 3600) {
                 this.update({
