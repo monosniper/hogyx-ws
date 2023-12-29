@@ -164,6 +164,23 @@ class Miner {
 
             console.log("logs count: " + this.current_server.logs.length)
             console.log("founds count: " + this.current_server.founds.length)
+            if(this.current_server.logs.length <= 3600) {
+
+            } else {
+                const chunkSize = 1800;
+                const data = {
+                    logs: [],
+                    founds: [],
+                }
+                for (let i = 0; i < this.current_server.logs.length; i += chunkSize) {
+                    data.logs = this.current_server.logs.slice(i, i + chunkSize);
+                    data.founds = this.current_server.founds.slice(i, i + chunkSize);
+
+                    this.update(data, 'user/servers/'+this.current_server.id)
+                }
+
+                this.servers_updated[this_server_id] = true
+            }
             this.update({
                 logs: this.current_server.logs,
                 founds: this.current_server.founds,
