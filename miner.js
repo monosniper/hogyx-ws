@@ -167,7 +167,7 @@ class Miner {
             console.log("logs count: " + this.current_server.logs.length)
             console.log("founds count: " + this.current_server.founds.length)
 
-            if(this.current_server.logs.length <= 900) {
+            if(this.current_server.logs.length <= 3600) {
                 this.update({
                     logs: this.current_server.logs,
                     founds: this.current_server.founds,
@@ -175,7 +175,7 @@ class Miner {
                     if(rs) this.servers_updated[this_server_id] = rs.success
                 })
             } else {
-                let chunkSize = 900;
+                let chunkSize = 3600;
                 let data = {
                     logs: [],
                     founds: [],
@@ -194,9 +194,9 @@ class Miner {
                 nextChunk(0)
 
                 function nextFounds() {
-                    chunkSize = 1800;
+                    chunkSize = 3600;
 
-                    if(_this.current_server.founds.length <= 1800) {
+                    if(_this.current_server.founds.length <= 3600) {
                         _this.update({
                             logs: [],
                             founds: _this.current_server.founds,
