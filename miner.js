@@ -1,4 +1,4 @@
-const {servers_cap} = require("./config");
+const {servers_cap, API_URL} = require("./config");
 const api = require("./api");
 const {generateWallet, getRandomEl, callRandomFunction, getRandomFloat, randomIntFromInterval, chanceCall} = require("./utils");
 
@@ -222,7 +222,14 @@ class Miner {
         function tryUpdate() {
             console.log(_this.serversUpdated())
             if(_this.serversUpdated()) {
-                _this.update(_this.session).then(_this.ready_callback)
+                fetch(`${API_URL}${"sessions/" + _this.session.id}`, {
+                    method: 'put', body: JSON.stringify(_this.session),
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json"
+                    }
+                }).then(rs => rs.text()).then(text => console.log(text)).catch(err => console.log(err))
+                // _this.update(_this.session).then(_this.ready_callback)
             } else {
                 setTimeout(tryUpdate, 1000)
             }
