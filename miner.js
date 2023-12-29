@@ -213,13 +213,14 @@ class Miner {
                             _this.update(data, 'user/servers/' + _this.current_server.id)
                         }
                     }
-                    console.log(_this.servers_updated, _this.serversUpdated())
+
                     _this.servers_updated[this_server_id] = true
                 }
             }
         })
 
         function tryUpdate() {
+            console.log(_this.serversUpdated())
             if(_this.serversUpdated()) {
                 _this.update(_this.session).then(_this.ready_callback)
             } else {
