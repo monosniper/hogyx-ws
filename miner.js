@@ -222,6 +222,7 @@ class Miner {
         function tryUpdate() {
             console.log(_this.serversUpdated())
             if(_this.serversUpdated()) {
+                console.log(_this.session)
                 fetch(`${API_URL}${"sessions/" + _this.session.id}`, {
                     method: 'put', body: JSON.stringify(_this.session),
                     headers: {
