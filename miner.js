@@ -220,17 +220,8 @@ class Miner {
         })
 
         function tryUpdate() {
-            console.log(_this.serversUpdated())
             if(_this.serversUpdated()) {
-                console.log(_this.session)
-                fetch(`${API_URL}${"sessions/" + _this.session.id}`, {
-                    method: 'put', body: JSON.stringify(_this.session),
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json"
-                    }
-                }).then(rs => rs.text()).then(text => console.log(text)).catch(err => console.log(err))
-                // _this.update(_this.session).then(_this.ready_callback)
+                _this.update({logs: _this.session.logs}).then(_this.ready_callback)
             } else {
                 setTimeout(tryUpdate, 1000)
             }
