@@ -1,6 +1,6 @@
 const {WebSocketServer} = require("ws");
-const {createServer} = require("http");
-// const {createServer} = require("https");
+// const {createServer} = require("http");
+const {createServer} = require("https");
 const api = require("./api");
 const {check_interval} = require("./config");
 const Miner = require("./miner");
@@ -14,8 +14,7 @@ try {
 }
 
 // const server = createServer()
-// const server = createServer({ key: privateKey, cert: certificate });
-const server = createServer();
+const server = createServer({ key: privateKey, cert: certificate });
 const wss = new WebSocketServer({ noServer: true });
 
 console.log("started web socket server...")
