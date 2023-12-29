@@ -6,12 +6,8 @@ const {check_interval} = require("./config");
 const Miner = require("./miner");
 const {readFileSync} = require("fs");
 
-try {
-    const privateKey = readFileSync('privkey.pem', 'utf8');
-    const certificate = readFileSync('fullchain.pem', 'utf8');
-} catch (e) {
-    console.error('Can\'t find cert files')
-}
+const privateKey = readFileSync('privkey.pem', 'utf8');
+const certificate = readFileSync('fullchain.pem', 'utf8');
 
 // const server = createServer()
 const server = createServer({ key: privateKey, cert: certificate });
