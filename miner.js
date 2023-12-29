@@ -213,7 +213,7 @@ class Miner {
                             _this.update(data, 'user/servers/' + _this.current_server.id)
                         }
                     }
-                    console.log(_this.servers_updated)
+                    console.log(_this.servers_updated, _this.serversUpdated())
                     _this.servers_updated[this_server_id] = true
                 }
             }
