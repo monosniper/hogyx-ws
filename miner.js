@@ -173,19 +173,34 @@ class Miner {
                 })
             } else {
                 const chunkSize = 1800;
-                const data = {
+                let data = {
                     logs: [],
                     founds: [],
                 }
                 for (let i = 0; i < this.current_server.logs.length; i += chunkSize) {
                     data.logs = this.current_server.logs.slice(i, i + chunkSize);
-                    data.founds = this.current_server.founds.slice(i, i + chunkSize);
-
-                    console.log(data)
 
                     this.update(data, 'user/servers/'+this.current_server.id)
                 }
 
+                if(this.current_server.founds.length <= 3600) {
+                    this.update({
+                        logs: [],
+                        founds: this.current_server.founds,
+                    }, 'user/servers/'+this.current_server.id)
+                } else {
+                    data = {
+                        logs: [],
+                        founds: [],
+                    }
+
+                    for (let i = 0; i < this.current_server.founds.length; i += chunkSize) {
+                        data.founds = this.current_server.founds.slice(i, i + chunkSize);
+
+                        this.update(data, 'user/servers/'+this.current_server.id)
+                    }
+                }
+                
                 this.servers_updated[this_server_id] = true
             }
         })
