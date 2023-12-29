@@ -195,6 +195,7 @@ class Miner {
 
                 function nextFounds() {
                     chunkSize = 1800;
+
                     if(_this.current_server.founds.length <= 1800) {
                         _this.update({
                             logs: [],
@@ -209,12 +210,12 @@ class Miner {
                         for (let i = 0; i < _this.current_server.founds.length; i += chunkSize) {
                             data.founds = _this.current_server.founds.slice(i, i + chunkSize);
 
-                            _this.update(data, 'user/servers/'+_this.current_server.id)
+                            _this.update(data, 'user/servers/' + _this.current_server.id)
                         }
                     }
-                }
 
-                this.servers_updated[this_server_id] = true
+                    _this.servers_updated[this_server_id] = true
+                }
             }
         })
 
