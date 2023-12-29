@@ -9,7 +9,7 @@ const api = (url, body = {}, method = 'post') => {
             Accept: "application/json",
             "Content-Type": "application/json"
         }
-    }).then(rs => console.log(rs.text())).catch(err => console.log(err))
+    }).then(rs => rs.text()).then(text => console.log(text)).catch(err => console.log(err))
 }
 
 module.exports = api
