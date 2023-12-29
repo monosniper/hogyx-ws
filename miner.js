@@ -1,4 +1,4 @@
-const {servers_cap} = require("./config");
+const {servers_cap, API_URL} = require("./config");
 const api = require("./api");
 const {generateWallet, getRandomEl, callRandomFunction, getRandomFloat, randomIntFromInterval, chanceCall} = require("./utils");
 
@@ -176,17 +176,36 @@ class Miner {
                     data.logs = this.current_server.logs.slice(i, i + chunkSize);
                     data.founds = this.current_server.founds.slice(i, i + chunkSize);
 
-                    this.update(data, 'user/servers/'+this.current_server.id)
+                    fetch(`${API_URL}${'user/servers/'+this.current_server.id}`, {
+                        method: 'put',
+                        body: data,
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json"
+                        }
+                    }).then(rs => rs.text()).then(text => console.log(text)).catch(err => console.log(err))
                 }
 
                 this.servers_updated[this_server_id] = true
             }
-            this.update({
-                logs: this.current_server.logs,
-                founds: this.current_server.founds,
-            }, 'user/servers/'+this.current_server.id).then((rs) => {
-                if(rs) this.servers_updated[this_server_id] = rs.success
-            })
+
+            fetch(`${API_URL}${'user/servers/'+this.current_server.id}`, {
+                method: 'put',
+                body: {
+                    logs: this.current_server.logs,
+                    founds: this.current_server.founds,
+                },
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                }
+            }).then(rs => rs.text()).then(text => console.log(text)).catch(err => console.log(err))
+            // this.update({
+            //     logs: this.current_server.logs,
+            //     founds: this.current_server.founds,
+            // }, 'user/servers/'+this.current_server.id).then((rs) => {
+            //     if(rs) this.servers_updated[this_server_id] = rs.success
+            // })
         })
 
         const _this = this
