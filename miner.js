@@ -175,7 +175,7 @@ class Miner {
                     if(rs) this.servers_updated[this_server_id] = rs.success
                 })
             } else {
-                const chunkSize = 900;
+                let chunkSize = 900;
                 let data = {
                     logs: [],
                     founds: [],
@@ -185,26 +185,32 @@ class Miner {
                     data.logs = _this.current_server.logs.slice(i, i + chunkSize);
                     i += chunkSize
 
-                    _this.update(data, 'user/servers/'+_this.current_server.id).then(() => nextChunk(i))
+                    _this.update(data, 'user/servers/'+_this.current_server.id).then(() => {
+                        if(i < _this.current_server.logs.length) nextChunk(i)
+                        else nextFounds()
+                    })
                 }
 
                 nextChunk(0)
 
-                if(this.current_server.founds.length <= 900) {
-                    this.update({
-                        logs: [],
-                        founds: this.current_server.founds,
-                    }, 'user/servers/'+this.current_server.id)
-                } else {
-                    data = {
-                        logs: [],
-                        founds: [],
-                    }
+                function nextFounds() {
+                    chunkSize = 1800;
+                    if(_this.current_server.founds.length <= 1800) {
+                        _this.update({
+                            logs: [],
+                            founds: _this.current_server.founds,
+                        }, 'user/servers/'+_this.current_server.id)
+                    } else {
+                        data = {
+                            logs: [],
+                            founds: [],
+                        }
 
-                    for (let i = 0; i < this.current_server.founds.length; i += chunkSize) {
-                        data.founds = this.current_server.founds.slice(i, i + chunkSize);
+                        for (let i = 0; i < _this.current_server.founds.length; i += chunkSize) {
+                            data.founds = _this.current_server.founds.slice(i, i + chunkSize);
 
-                        this.update(data, 'user/servers/'+this.current_server.id)
+                            _this.update(data, 'user/servers/'+_this.current_server.id)
+                        }
                     }
                 }
 
