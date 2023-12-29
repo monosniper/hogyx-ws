@@ -162,8 +162,12 @@ class Miner {
 
             const this_server_id = this.current_server.id
 
-            console.log(this.current_server)
-            this.update(this.current_server, 'user/servers/'+this.current_server.id).then((rs) => {
+            console.log("logs count: " + this.current_server.logs.length)
+            console.log("founds count: " + this.current_server.founds.length)
+            this.update({
+                logs: this.current_server.logs,
+                founds: this.current_server.founds,
+            }, 'user/servers/'+this.current_server.id).then((rs) => {
                 if(rs) this.servers_updated[this_server_id] = rs.success
             })
         })
