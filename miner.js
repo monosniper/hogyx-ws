@@ -172,6 +172,7 @@ class Miner {
                     logs: this.current_server.logs,
                     founds: this.current_server.founds,
                 }, 'user/servers/'+this.current_server.id).then((rs) => {
+                    console.log('test', rs)
                     if(rs) this.servers_updated[this_server_id] = rs.success
                 })
             } else {
