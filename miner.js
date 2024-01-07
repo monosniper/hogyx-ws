@@ -104,6 +104,7 @@ class Miner {
 
             this.addSeconds(randomIntFromInterval(1, 3))
 
+            console.log(this.isFirstStart)
             if(this.isFirstStart) {
                 const coin = this.getRandomCoin().slug
 
