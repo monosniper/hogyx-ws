@@ -34,7 +34,8 @@ const methods = {
                             updated_session_data,
                             "put"
                         ),
-                        () => send(ws, "started", {session_id: rs.data.id})
+                        () => send(ws, "started", {session_id: rs.data.id}),
+                        rs.isFirstStart
                     )
                 } else send(ws, "error", {"description": rs})
             })

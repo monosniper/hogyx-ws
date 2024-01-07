@@ -13,11 +13,12 @@ class Found {
 }
 
 class Miner {
-    constructor(session_data, update_callback, ready_callback) {
+    constructor(session_data, update_callback, ready_callback, isFirstStart) {
         this.session = session_data
         this.update = update_callback
         this.ready_callback = ready_callback
         this.interval = 1000
+        this.isFirstStart = isFirstStart
         this.current_server = null;
         this.servers_updated = {};
         this.timestamp = new Date(this.session.created_at);
@@ -102,6 +103,16 @@ class Miner {
             })
 
             this.addSeconds(randomIntFromInterval(1, 3))
+
+            if(this.isFirstStart) {
+                const coin = this.getRandomCoin().slug
+
+                this.addServerFound({
+                    type: Found.TYPE_COIN,
+                    amount: this.getCoinAmount([5, 10], coin),
+                    id: coin,
+                })
+            }
 
             for(let i = 1; i <= work_time; i++) {
                 // i % 2 === 0 && this.addSeconds()
